@@ -24,13 +24,13 @@ async function LinkedinProfile(q){
     await page.setViewport({ width: 1000, height: 926 });
 
 
-    var openGOogle = async function(){
+    const openGOogle = async function(){
         console.log("open google")
         await page.goto("https://google.com/search?q=" + parseQuery(q),{waitUntil: 'networkidle2'});
 
         await waitUntil(1000)
     
-        var goglinks =  await page.evaluate(function(){
+        const goglinks =  await page.evaluate(function(){
             var listGresult = document.querySelectorAll('.g');
             var linkresult = []
             for(var x=0;x <listGresult.length;x++){
@@ -48,9 +48,9 @@ async function LinkedinProfile(q){
         return goglinks;
     }    
 
-    var scrapLinkedin = async function(link){
+    const scrapLinkedin = async function(link){
         await page.goto(link);
-        
+        await waitUntil(1000)
         var objprofile = await page.evaluate( function(){
             // run on browser
             var frameElem = document.querySelector(".display-flex.mt2");  
@@ -77,18 +77,18 @@ async function LinkedinProfile(q){
 
     }
 
-    var result = []
-    var googlinks = await openGOogle();
-    for(var x=0;x<googlinks.length;x++){
-        var link = googlinks[x]; 
+    let result = []
+    let googlinks = await openGOogle();
+    for(let x=0;x<googlinks.length;x++){
+        let link = googlinks[x]; 
         console.log('[ ' +x+' ] ' + link)
-        var objprofile = await scrapLinkedin(link)
+        let objprofile = await scrapLinkedin(link)
         objprofile.link = link;
         result.push(objprofile);
     } 
 
     console.log(result);
-    browser.close()
+    await browser.close() ;
 } 
 
 LinkedinProfile(`site:linkedin.com/in/ AND "Moscow" AND "golang developer"`)
